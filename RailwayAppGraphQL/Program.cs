@@ -2,23 +2,24 @@ using HotChocolate.AspNetCore.Voyager;
 using Microsoft.EntityFrameworkCore;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
+using RailwayAppGraphQL.GraphQL.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+// Register DbContext (for HotChocolate)
+builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("MariaDB");
-
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)
-    );
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 // Add GraphQL server
 builder.Services
-    .AddGraphQLServer();
-// .AddQueryType<Query>()
-// .AddProjections()   // optional: for IQueryable
+    .AddGraphQLServer()
+    .RegisterDbContextFactory<ApplicationDbContext>()
+    .AddQueryType<Query>()
+    .AddTypes(typeof(TrainQueries), typeof(StationQueries), typeof(TicketQueries))
+    .AddProjections(); // select only required fields not all of them
 //  .AddFiltering()
 //  .AddSorting();
 
