@@ -4,4 +4,30 @@
     build:
       context: .
       dockerfile: RailwayAppGraphQL/Dockerfile
+    depends_on:
+      - railwayappgraphqlDb
+      - railwayappgraphqlRabbitmq
 
+  railwayappgraphqlDb:
+    image: mariadb:10.7
+    restart: always
+    environment:
+      MARIADB_DATABASE: RailwayDb
+      MARIADB_USER: root
+      MARIADB_PASSWORD: root
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - ./.containers/mariadb_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  railwayappgraphqlRabbitmq:
+    image: rabbitmq:management
+    hostname: railwayapp-mq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
