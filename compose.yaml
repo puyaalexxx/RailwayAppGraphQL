@@ -12,7 +12,7 @@
     image: mariadb:10.7
     restart: always
     environment:
-      MARIADB_DATABASE: RailwayDb
+      MARIADB_DATABASE: RailwayGraphQLDb
       MARIADB_USER: root
       MARIADB_PASSWORD: root
       MARIADB_ROOT_PASSWORD: root

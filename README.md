@@ -10,5 +10,3 @@
 - 
 - Entity Framework Core for data access
 - Migrations to manage database schema changes
-- Tables configurations via IEntityTypeConfiguration
-- Fluent API for model configuration
