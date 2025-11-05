@@ -1,4 +1,3 @@
-using HotChocolate.AspNetCore.Voyager;
 using Microsoft.EntityFrameworkCore;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
@@ -35,8 +34,6 @@ else
 app.UseHttpsRedirection();
 
 app.MapGraphQL();
-
-app.UseVoyager();
 
 app.MapGet("/", () => "Hello World!");
 
