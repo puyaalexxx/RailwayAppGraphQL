@@ -1,0 +1,7 @@
+﻿services:
+  railwayappgraphql:
+    image: railwayappgraphql
+    build:
+      context: .
+      dockerfile: RailwayAppGraphQL/Dockerfile
+
