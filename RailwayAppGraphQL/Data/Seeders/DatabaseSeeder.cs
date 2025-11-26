@@ -47,7 +47,7 @@ public static class DatabaseSeeder
         // -----------------------------------------
         // 3. Stops (Each train gets 3–6 stops)
         // -----------------------------------------
-        var stopId = 1;
+        //var stopId = 1;
 
         foreach (var train in trains)
         {

@@ -17,7 +17,7 @@ builder.Services
     .AddGraphQLServer()
     .RegisterDbContextFactory<ApplicationDbContext>()
     .AddQueryType<Query>()
-    .AddTypes(typeof(TrainQueries), typeof(StationQueries), typeof(TicketQueries))
+    .AddTypes(typeof(TrainQueries), typeof(StationQueries), typeof(TicketQueries), typeof(StopQueries))
     .AddProjections(); // select only required fields not all of them
 //  .AddFiltering()
 //  .AddSorting();
