@@ -24,7 +24,7 @@ builder.Services
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddTypes(typeof(TrainQueries), typeof(StationQueries), typeof(TicketQueries), typeof(StopQueries),
-        typeof(TrainMutations))
+        typeof(TrainMutations), typeof(StationMutations), typeof(TicketMutations), typeof(StopMutations))
     .ModifyPagingOptions(pagingOptions =>
     {
         pagingOptions.DefaultPageSize = 5;

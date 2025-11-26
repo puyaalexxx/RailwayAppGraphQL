@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using RailwayAppGraphQL.GraphQL.Inputs;
+using RailwayAppGraphQL.GraphQL.Inputs.Trains;
 
-namespace RailwayAppGraphQL.Validators;
+namespace RailwayAppGraphQL.Validators.Trains;
 
 public class UpdateTrainInputValidator : AbstractValidator<UpdateTrainInput>
 {
@@ -17,5 +17,13 @@ public class UpdateTrainInputValidator : AbstractValidator<UpdateTrainInput>
 
         RuleFor(x => x.Seats).GreaterThan(0).When(x => x.Seats.HasValue)
             .WithMessage("Seats must be greater than 0.");
+        
+        // Type: must be a valid enum
+        RuleFor(x => x.Type)
+            .IsInEnum().WithMessage("Train type must be valid.");
+
+        // Status: must be a valid enum
+        RuleFor(x => x.Status)
+            .IsInEnum().WithMessage("Train status must be valid.");
     }
 }

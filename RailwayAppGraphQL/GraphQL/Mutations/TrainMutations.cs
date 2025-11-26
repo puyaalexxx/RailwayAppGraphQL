@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
-using RailwayAppGraphQL.GraphQL.Inputs;
+using RailwayAppGraphQL.GraphQL.Inputs.Trains;
 using RailwayAppGraphQL.Models.Trains;
 
 namespace RailwayAppGraphQL.GraphQL.Mutations;

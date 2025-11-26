@@ -12,3 +12,5 @@
 - Migrations to manage database schema changes
 - Database Seeder with Bogus Faker
 - Repository Pattern for data access abstraction
+- 
+- FluentValidation for input validation
