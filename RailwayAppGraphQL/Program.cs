@@ -26,10 +26,17 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
+{
     // applying migrations automatically
     await app.ApplyMigrationAsync();
+
+    // Seed database (run once at startup)
+    await app.SeedDatabaseAsync();
+}
 else
+{
     app.UseHsts();
+}
 
 app.UseHttpsRedirection();
 
