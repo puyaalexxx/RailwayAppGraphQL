@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <PackageReference Include="Bogus" Version="35.6.5"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0"/>
 
         <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.11"/>
         <PackageReference Include="HotChocolate.Data" Version="15.1.11"/>
@@ -35,7 +36,6 @@
     <ItemGroup>
         <Folder Include="Data\Migrations\"/>
         <Folder Include="Data\Repositories\"/>
-        <Folder Include="GraphQL\Mutations\"/>
     </ItemGroup>
 
 </Project>
