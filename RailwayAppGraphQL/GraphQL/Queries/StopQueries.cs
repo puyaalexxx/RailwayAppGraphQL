@@ -7,6 +7,7 @@ namespace RailwayAppGraphQL.GraphQL.Queries;
 [ExtendObjectType(typeof(Query))]
 public class StopQueries
 {
+    [UsePaging(IncludeTotalCount = true)]
     [UseProjection]
     public IQueryable<Stop> GetStops(ApplicationDbContext dbContext)
     {

@@ -25,6 +25,13 @@ builder.Services
     .AddMutationType<Mutation>()
     .AddTypes(typeof(TrainQueries), typeof(StationQueries), typeof(TicketQueries), typeof(StopQueries),
         typeof(TrainMutations))
+    .ModifyPagingOptions(pagingOptions =>
+    {
+        pagingOptions.DefaultPageSize = 5;
+        pagingOptions.MaxPageSize = 10;
+        pagingOptions.AllowBackwardPagination = false;
+        // pagingOptions.RequirePagingBoundaries = true; // clients need to specify either first, last or take.
+    })
     .AddProjections(); // select only required fields not all of them
 //  .AddFiltering()
 //  .AddSorting();

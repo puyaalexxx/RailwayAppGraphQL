@@ -7,6 +7,7 @@ namespace RailwayAppGraphQL.GraphQL.Queries;
 [ExtendObjectType(typeof(Query))]
 public class TicketQueries
 {
+    [UsePaging(IncludeTotalCount = true)]
     [UseProjection]
     public IQueryable<Ticket> GetTickets(ApplicationDbContext dbContext)
     {

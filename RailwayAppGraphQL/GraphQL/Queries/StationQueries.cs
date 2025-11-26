@@ -7,6 +7,7 @@ namespace RailwayAppGraphQL.GraphQL.Queries;
 [ExtendObjectType(typeof(Query))]
 public class StationQueries
 {
+    [UsePaging(IncludeTotalCount = true)]
     [UseProjection]
     public IQueryable<Station> GetStations(ApplicationDbContext dbContext)
     {
