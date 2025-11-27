@@ -57,4 +57,16 @@ public class StopMutations
 
         return stop;
     }
+
+    public async Task<Stop> DeleteStop(ApplicationDbContext dbContext, Guid stopId)
+    {
+        var stop = await dbContext.Stops.FindAsync(stopId);
+        if (stop == null) throw new GraphQLException("Stop not found.");
+
+        dbContext.Stops.Remove(stop);
+
+        await dbContext.SaveChangesAsync();
+
+        return stop;
+    }
 }

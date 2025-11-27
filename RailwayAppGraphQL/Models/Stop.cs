@@ -22,6 +22,6 @@ public sealed class Stop
     public Station Station { get; set; } = null!;
 
     // Foreign key to Train - each stop belong to one train
-    public Guid TrainId { get; set; }
+    [GraphQLIgnore] public Guid TrainId { get; set; }
     public Train Train { get; set; } = null!;
 }
