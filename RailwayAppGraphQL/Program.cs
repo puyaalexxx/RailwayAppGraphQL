@@ -8,7 +8,7 @@ using RailwayAppGraphQL.GraphQL.Queries;
 var builder = WebApplication.CreateBuilder(args);
 
 // Register DbContext (for HotChocolate)
-builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("MariaDB");
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
@@ -16,6 +16,7 @@ builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
 
 // Add validators for FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+//builder.Services.AddScoped<IValidator<CreateStopInput>, CreateStopInputValidator>(); // explicit implementation
 
 // Add GraphQL server
 builder.Services

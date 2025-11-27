@@ -63,6 +63,7 @@ public static class DatabaseSeeder
                 train.Stops.Add(new Stop
                 {
                     Id = Guid.NewGuid(),
+                    TrainId = train.Id,
                     StationId = st.Id,
                     ArrivalTimeUtc = arrival,
                     DepartureTimeUtc = departure

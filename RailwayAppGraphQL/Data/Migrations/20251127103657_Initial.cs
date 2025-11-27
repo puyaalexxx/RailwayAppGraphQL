@@ -60,7 +60,7 @@ namespace RailwayAppGraphQL.Data.Migrations
                     DepartureTimeUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ArrivalTimeUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     StationId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    TrainId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
+                    TrainId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -75,7 +75,8 @@ namespace RailwayAppGraphQL.Data.Migrations
                         name: "FK_Stops_Trains_TrainId",
                         column: x => x.TrainId,
                         principalTable: "Trains",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

@@ -2,5 +2,6 @@
 
 public sealed record UpdateStopInput(
     Guid StationId,
-    DateTime DepartureTimeUtc,
-    DateTime ArrivalTimeUtc);
+    Guid TrainId,
+    DateTime? DepartureTimeUtc,
+    DateTime? ArrivalTimeUtc);

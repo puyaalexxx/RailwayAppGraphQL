@@ -67,7 +67,7 @@ namespace RailwayAppGraphQL.Data.Migrations
                     b.Property<Guid>("StationId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("TrainId")
+                    b.Property<Guid>("TrainId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
@@ -156,16 +156,20 @@ namespace RailwayAppGraphQL.Data.Migrations
             modelBuilder.Entity("RailwayAppGraphQL.Models.Stop", b =>
                 {
                     b.HasOne("RailwayAppGraphQL.Models.Station", "Station")
-                        .WithMany()
+                        .WithMany("Stops")
                         .HasForeignKey("StationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RailwayAppGraphQL.Models.Trains.Train", null)
+                    b.HasOne("RailwayAppGraphQL.Models.Trains.Train", "Train")
                         .WithMany("Stops")
-                        .HasForeignKey("TrainId");
+                        .HasForeignKey("TrainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Station");
+
+                    b.Navigation("Train");
                 });
 
             modelBuilder.Entity("RailwayAppGraphQL.Models.Tickets.Ticket", b =>
@@ -177,6 +181,11 @@ namespace RailwayAppGraphQL.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Train");
+                });
+
+            modelBuilder.Entity("RailwayAppGraphQL.Models.Station", b =>
+                {
+                    b.Navigation("Stops");
                 });
 
             modelBuilder.Entity("RailwayAppGraphQL.Models.Trains.Train", b =>
