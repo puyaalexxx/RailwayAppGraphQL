@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RailwayAppGraphQL.Models.Tickets;
+﻿using RailwayAppGraphQL.Models.Tickets;
 
 namespace RailwayAppGraphQL.Models.Trains;
 
@@ -7,9 +6,9 @@ public sealed class Train
 {
     public Guid Id { get; set; }
 
-    [MaxLength(50)] public required string Name { get; set; }
+    public required string Name { get; set; }
 
-    [MaxLength(15)] public required string Number { get; set; }
+    public required string Number { get; set; }
 
     public Type Type { get; set; }
 

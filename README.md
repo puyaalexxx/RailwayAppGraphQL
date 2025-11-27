@@ -9,6 +9,7 @@
 - RabbitMQ for messaging (MassTransit)
 - 
 - Entity Framework Core for data access
+- Fluent API for database configuration
 - Migrations to manage database schema changes
 - Database Seeder with Bogus Faker
 - CRUD operations for stations, trains, stops and tickets

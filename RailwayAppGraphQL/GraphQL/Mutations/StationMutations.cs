@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
 using RailwayAppGraphQL.GraphQL.Inputs.Stations;
@@ -66,6 +67,10 @@ public class StationMutations
     {
         var station = await dbContext.Stations.FindAsync(stationId);
         if (station == null) throw new GraphQLException("Station not found.");
+        
+        // Check for dependent stops
+        if (await dbContext.Stops.AnyAsync(s => s.StationId == stationId))
+            throw new GraphQLException("Cannot delete this station because it has stops assigned to it.");
 
         dbContext.Stations.Remove(station);
 
