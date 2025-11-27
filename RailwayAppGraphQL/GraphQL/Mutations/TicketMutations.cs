@@ -42,5 +42,27 @@ public class TicketMutations
 
         return ticket;
     }
-    
+
+    public async Task<Ticket> UpdateTicket(ApplicationDbContext dbContext, Guid ticketId, UpdateTicketInput input)
+    {
+        var validationResult = await _updateValidator.ValidateAsync(input);
+        if (!validationResult.IsValid) throw new GraphQLException(validationResult.ToGraphQLErrors());
+
+        var ticket = await dbContext.Tickets.FindAsync(ticketId);
+        if (ticket == null) throw new GraphQLException("Ticket not found.");
+
+        // Update only the provided fields
+        if (input.Number != null) ticket.Number = input.Number;
+        if (input.PassengerName != null) ticket.PassengerName = input.PassengerName;
+        if (input.PassengerEmail != null) ticket.PassengerEmail = input.PassengerEmail;
+        if (input.SeatNumber != null) ticket.SeatNumber = input.SeatNumber;
+        if (input.Price != null) ticket.Price = input.Price.Value;
+        if (input.Currency != null) ticket.Currency = input.Currency.Value;
+        if (input.PurchasedAtUtc != null) ticket.PurchasedAtUtc = input.PurchasedAtUtc.Value;
+        if (input.TrainId != null) ticket.TrainId = input.TrainId.Value;
+
+        await dbContext.SaveChangesAsync();
+
+        return ticket;
+    }
 }

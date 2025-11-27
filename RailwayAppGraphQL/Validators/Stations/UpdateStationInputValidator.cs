@@ -8,11 +8,11 @@ public sealed class UpdateStationInputValidator : AbstractValidator<UpdateStatio
     public UpdateStationInputValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Station name is required.")
-            .MaximumLength(50).WithMessage("Station name must not exceed 50 characters.");
+            .MaximumLength(50).WithMessage("Station name must not exceed 50 characters.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Name));
 
         RuleFor(x => x.Address)
-            .NotEmpty().WithMessage("Station address is required.")
-            .MaximumLength(150).WithMessage("Station address cannot exceed 150 characters.");
+            .MaximumLength(150).WithMessage("Station address cannot exceed 150 characters.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Address));
     }
 }

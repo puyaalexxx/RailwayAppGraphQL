@@ -1,12 +1,18 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.GraphQL.Inputs.Tickets;
 
 namespace RailwayAppGraphQL.Validators.Tickets;
 
 public sealed class CreateTicketInputValidator : AbstractValidator<CreateTicketInput>
 {
-    public CreateTicketInputValidator()
+    private readonly IDbContextFactory<ApplicationDbContext> _factory;
+    
+    public CreateTicketInputValidator(IDbContextFactory<ApplicationDbContext> factory)
     {
+        _factory = factory;
+        
         // Ticket number
         RuleFor(x => x.Number)
             .NotEmpty().WithMessage("Ticket number is required.")
@@ -42,6 +48,14 @@ public sealed class CreateTicketInputValidator : AbstractValidator<CreateTicketI
 
         // TrainId (foreign key)
         RuleFor(x => x.TrainId)
-            .NotEmpty().WithMessage("TrainId is required.");
+            .MustAsync(TrainExists)
+            .WithMessage("Train ID does not exist, please provide an existing one.");
+    }
+    
+    private async Task<bool> TrainExists(Guid trainId, CancellationToken cancellationToken)
+    {
+        await using var db = await _factory.CreateDbContextAsync(cancellationToken);
+
+        return await db.Trains.AnyAsync(s => s.Id == trainId, cancellationToken);
     }
 }

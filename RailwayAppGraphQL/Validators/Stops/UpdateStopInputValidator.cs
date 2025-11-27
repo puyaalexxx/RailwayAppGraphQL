@@ -15,15 +15,18 @@ public class UpdateStopInputValidator : AbstractValidator<UpdateStopInput>
 
         RuleFor(x => x.ArrivalTimeUtc)
             .GreaterThan(x => x.DepartureTimeUtc)
-            .WithMessage("Arrival time must be after departure time.");
+            .WithMessage("Arrival time must be after departure time.")
+            .When(x => x.ArrivalTimeUtc.HasValue && x.DepartureTimeUtc.HasValue);
 
         RuleFor(x => x.DepartureTimeUtc)
             .Must(dt => dt.HasValue && dt.Value.Kind == DateTimeKind.Utc)
-            .WithMessage("DepartureTimeUtc must be UTC.");
+            .WithMessage("DepartureTimeUtc must be UTC.")
+            .When(x => x.DepartureTimeUtc.HasValue);
 
         RuleFor(x => x.ArrivalTimeUtc)
             .Must(dt => dt.HasValue && dt.Value.Kind == DateTimeKind.Utc)
-            .WithMessage("ArrivalTimeUtc must be UTC.");
+            .WithMessage("ArrivalTimeUtc must be UTC.")
+            .When(x => x.ArrivalTimeUtc.HasValue);
 
         RuleFor(x => x.StationId)
             .MustAsync(StationExists)
