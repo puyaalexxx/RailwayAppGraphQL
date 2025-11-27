@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
+using RailwayAppGraphQL.Data;
+using RailwayAppGraphQL.Extensions;
 using RailwayAppGraphQL.GraphQL.Inputs.Tickets;
+using RailwayAppGraphQL.Models.Tickets;
 
 namespace RailwayAppGraphQL.GraphQL.Mutations;
 
@@ -14,4 +17,30 @@ public class TicketMutations
         _createValidator = createValidator;
         _updateValidator = updateValidator;
     }
+
+    public async Task<Ticket> CreateTicket(ApplicationDbContext dbContext, CreateTicketInput input)
+    {
+        var validationResult = await _createValidator.ValidateAsync(input);
+        if (!validationResult.IsValid) throw new GraphQLException(validationResult.ToGraphQLErrors());
+
+        var ticket = new Ticket
+        {
+            Id = Guid.NewGuid(),
+            Number = input.Number,
+            PassengerName = input.PassengerName,
+            PassengerEmail = input.PassengerEmail,
+            SeatNumber = input.SeatNumber,
+            Price = input.Price,
+            Currency = input.Currency,
+            PurchasedAtUtc = input.PurchasedAtUtc,
+            TrainId = input.TrainId
+        };
+
+        dbContext.Tickets.Add(ticket);
+
+        await dbContext.SaveChangesAsync();
+
+        return ticket;
+    }
+    
 }

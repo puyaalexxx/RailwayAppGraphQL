@@ -3,11 +3,11 @@
 namespace RailwayAppGraphQL.GraphQL.Inputs.Tickets;
 
 public sealed record UpdateTicketInput(
-    string Number,
-    string PassengerName,
+    string? Number,
+    string? PassengerName,
     string? PassengerEmail,
-    string SeatNumber,
-    decimal Price,
-    Currency Currency,
-    DateTime PurchasedAtUtc,
-    Guid TrainId);
+    string? SeatNumber,
+    decimal? Price,
+    Currency? Currency,
+    DateTime? PurchasedAtUtc,
+    Guid? TrainId);

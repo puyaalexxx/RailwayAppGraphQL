@@ -36,6 +36,10 @@ public sealed class CreateTicketInputValidator : AbstractValidator<CreateTicketI
         RuleFor(x => x.Currency)
             .IsInEnum().WithMessage("Currency must be a valid value.");
 
+        RuleFor(x => x.PurchasedAtUtc.Kind)
+            .Equal(DateTimeKind.Utc)
+            .WithMessage("PurchasedAtUtc must be UTC.");
+
         // TrainId (foreign key)
         RuleFor(x => x.TrainId)
             .NotEmpty().WithMessage("TrainId is required.");

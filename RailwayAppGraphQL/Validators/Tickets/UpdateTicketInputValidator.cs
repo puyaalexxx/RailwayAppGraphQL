@@ -3,7 +3,7 @@ using RailwayAppGraphQL.GraphQL.Inputs.Tickets;
 
 namespace RailwayAppGraphQL.Validators.Tickets;
 
-public sealed class UpdateTicketInputValidator : AbstractValidator<CreateTicketInput>
+public sealed class UpdateTicketInputValidator : AbstractValidator<UpdateTicketInput>
 {
     public UpdateTicketInputValidator()
     {
@@ -35,6 +35,10 @@ public sealed class UpdateTicketInputValidator : AbstractValidator<CreateTicketI
         // Currency
         RuleFor(x => x.Currency)
             .IsInEnum().WithMessage("Currency must be a valid value.");
+        
+        RuleFor(x => x.PurchasedAtUtc)
+            .Must(dt => dt.HasValue && dt.Value.Kind == DateTimeKind.Utc)
+            .WithMessage("PurchasedAtUtc must be UTC.");
 
         // TrainId (foreign key)
         RuleFor(x => x.TrainId)
