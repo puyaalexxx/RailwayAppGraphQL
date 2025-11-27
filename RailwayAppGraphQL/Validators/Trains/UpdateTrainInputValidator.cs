@@ -19,7 +19,7 @@ public class UpdateTrainInputValidator : AbstractValidator<UpdateTrainInput>
         RuleFor(x => x.Seats)
             .GreaterThan(0).WithMessage("Seats must be greater than 0.")
             .When(x => x.Seats.HasValue);
-
+        
         // Type: must be a valid enum
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage("Train type must be valid.")

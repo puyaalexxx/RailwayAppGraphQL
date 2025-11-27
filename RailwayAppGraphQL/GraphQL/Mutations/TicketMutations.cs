@@ -58,8 +58,20 @@ public class TicketMutations
         if (input.SeatNumber != null) ticket.SeatNumber = input.SeatNumber;
         if (input.Price != null) ticket.Price = input.Price.Value;
         if (input.Currency != null) ticket.Currency = input.Currency.Value;
-        if (input.PurchasedAtUtc != null) ticket.PurchasedAtUtc = input.PurchasedAtUtc.Value;
+        if (input.PurchasedAtUtc != null) ticket.PurchasedAtUtc = input.PurchasedAtUtc.Value; 
         if (input.TrainId != null) ticket.TrainId = input.TrainId.Value;
+
+        await dbContext.SaveChangesAsync();
+
+        return ticket;
+    }
+    
+    public async Task<Ticket> DeleteTicket(ApplicationDbContext dbContext, Guid ticketId)
+    {
+        var ticket = await dbContext.Tickets.FindAsync(ticketId);
+        if (ticket == null) throw new GraphQLException("Ticket not found.");
+
+        dbContext.Tickets.Remove(ticket);
 
         await dbContext.SaveChangesAsync();
 
