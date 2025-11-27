@@ -1,5 +1,7 @@
 using FluentValidation;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using RailwayAppGraphQL.Consumers.Tickets;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
 using RailwayAppGraphQL.GraphQL.Mutations;
@@ -36,6 +38,21 @@ builder.Services
     .AddProjections(); // select only required fields not all of them
 //  .AddFiltering()
 //  .AddSorting();
+
+// Add MassTransit
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("ticket-created-queue", e => { e.ConfigureConsumer<TicketCreatedConsumer>(context); });
+    });
+});
 
 var app = builder.Build();
 

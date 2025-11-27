@@ -40,6 +40,14 @@ public class TicketMutations
 
         await dbContext.SaveChangesAsync();
 
+        // Publish event
+        /*await _bus.Publish(new TicketCreated(
+            ticket.Id,
+            ticket.TrainId,
+            ticket.PassengerName,
+            ticket.PurchasedAtUtc.Value
+        ));*/
+
         return ticket;
     }
 
@@ -58,14 +66,14 @@ public class TicketMutations
         if (input.SeatNumber != null) ticket.SeatNumber = input.SeatNumber;
         if (input.Price != null) ticket.Price = input.Price.Value;
         if (input.Currency != null) ticket.Currency = input.Currency.Value;
-        if (input.PurchasedAtUtc != null) ticket.PurchasedAtUtc = input.PurchasedAtUtc.Value; 
+        if (input.PurchasedAtUtc != null) ticket.PurchasedAtUtc = input.PurchasedAtUtc.Value;
         if (input.TrainId != null) ticket.TrainId = input.TrainId.Value;
 
         await dbContext.SaveChangesAsync();
 
         return ticket;
     }
-    
+
     public async Task<Ticket> DeleteTicket(ApplicationDbContext dbContext, Guid ticketId)
     {
         var ticket = await dbContext.Tickets.FindAsync(ticketId);
