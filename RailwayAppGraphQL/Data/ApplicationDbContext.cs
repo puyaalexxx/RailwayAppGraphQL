@@ -11,4 +11,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Station> Stations => Set<Station>();
     public DbSet<Stop> Stops => Set<Stop>();
     public DbSet<Ticket> Tickets => Set<Ticket>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
 }

@@ -27,22 +27,30 @@ public class UpdateStopInputValidator : AbstractValidator<UpdateStopInput>
 
         RuleFor(x => x.StationId)
             .MustAsync(StationExists)
+            .When(x => x.StationId.HasValue)
             .WithMessage("Station does not exist.");
 
         RuleFor(x => x.TrainId)
             .MustAsync(TrainExists)
+            .When(x => x.TrainId.HasValue)
             .WithMessage("Train ID does not exist, please provide an existing one.");
     }
 
-    private async Task<bool> StationExists(Guid stationId, CancellationToken cancellationToken)
+    private async Task<bool> StationExists(Guid? stationId, CancellationToken cancellationToken)
     {
+        if (stationId is null)
+            return true;
+
         await using var db = await _factory.CreateDbContextAsync(cancellationToken);
 
         return await db.Stations.AnyAsync(s => s.Id == stationId, cancellationToken);
     }
 
-    private async Task<bool> TrainExists(Guid trainId, CancellationToken cancellationToken)
+    private async Task<bool> TrainExists(Guid? trainId, CancellationToken cancellationToken)
     {
+        if (trainId is null)
+            return true;
+
         await using var db = await _factory.CreateDbContextAsync(cancellationToken);
 
         return await db.Trains.AnyAsync(s => s.Id == trainId, cancellationToken);

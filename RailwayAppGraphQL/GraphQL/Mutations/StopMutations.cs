@@ -38,4 +38,23 @@ public class StopMutations
 
         return stop;
     }
+
+    public async Task<Stop> UpdateStop(ApplicationDbContext dbContext, Guid stopId, UpdateStopInput input)
+    {
+        var validationResult = await _updateValidator.ValidateAsync(input);
+        if (!validationResult.IsValid) throw new GraphQLException(validationResult.ToGraphQLErrors());
+
+        var stop = await dbContext.Stops.FindAsync(stopId);
+        if (stop == null) throw new GraphQLException("Stop not found");
+
+        // Update only the provided fields
+        if (input.StationId != null) stop.StationId = input.StationId.Value;
+        if (input.TrainId != null) stop.TrainId = input.TrainId.Value;
+        if (input.DepartureTimeUtc != null) stop.DepartureTimeUtc = input.DepartureTimeUtc.Value;
+        if (input.ArrivalTimeUtc != null) stop.ArrivalTimeUtc = input.ArrivalTimeUtc.Value;
+
+        await dbContext.SaveChangesAsync();
+
+        return stop;
+    }
 }
