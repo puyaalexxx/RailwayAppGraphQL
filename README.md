@@ -11,6 +11,6 @@
 - Entity Framework Core for data access
 - Migrations to manage database schema changes
 - Database Seeder with Bogus Faker
-- Repository Pattern for data access abstraction
+- CRUD operations for stations, trains, stops and tickets
 - 
 - FluentValidation for input validation
