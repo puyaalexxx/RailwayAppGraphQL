@@ -38,6 +38,10 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(t => t.PurchasedAtUtc)
             .IsRequired();
 
+        // prevent duplicate ticket numbers on the same train, allow same ticket numbers on different trains.
+        builder.HasIndex(t => new { t.TrainId, t.Number })
+            .IsUnique();
+
         // Ticket → Train (many-to-one)
         builder.HasOne(t => t.Train)
             .WithMany(tr => tr.Tickets)
