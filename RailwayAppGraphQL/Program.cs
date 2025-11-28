@@ -47,6 +47,7 @@ builder.Services
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<TicketCreatedConsumer>();
+    x.AddConsumer<TicketDeletedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -58,6 +59,8 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("ticket-created-queue",
             e => { e.ConfigureConsumer<TicketCreatedConsumer>(context); });
+        cfg.ReceiveEndpoint("ticket-deleted-queue",
+            e => { e.ConfigureConsumer<TicketDeletedConsumer>(context); });
     });
 });
 

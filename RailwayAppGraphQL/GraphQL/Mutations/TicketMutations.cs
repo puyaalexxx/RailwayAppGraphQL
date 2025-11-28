@@ -49,7 +49,7 @@ public class TicketMutations
         // ticket info
         var ticketInfo = await TicketHelpers.GetTicketTrainInfoAsync(dbContext, ticket.TrainId);
 
-        // Publish event
+        // publish event
         await _bus.Publish(new TicketCreated(
             ticket.Id, ticket.Number,
             ticket.PassengerName, ticket.PassengerEmail ?? "",
@@ -71,7 +71,7 @@ public class TicketMutations
         var ticket = await dbContext.Tickets.FindAsync(ticketId);
         if (ticket == null) throw new GraphQLException("Ticket not found.");
 
-        // Update only the provided fields
+        // update only the provided fields
         if (input.Number != null) ticket.Number = input.Number;
         if (input.PassengerName != null) ticket.PassengerName = input.PassengerName;
         if (input.PassengerEmail != null) ticket.PassengerEmail = input.PassengerEmail;
@@ -94,6 +94,9 @@ public class TicketMutations
         dbContext.Tickets.Remove(ticket);
 
         await dbContext.SaveChangesAsync();
+
+        // publish event
+        await _bus.Publish(new TicketDeleted(ticket.Id));
 
         return ticket;
     }
