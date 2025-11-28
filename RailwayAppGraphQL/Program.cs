@@ -1,11 +1,15 @@
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF;
+using QuestPDF.Infrastructure;
 using RailwayAppGraphQL.Consumers.Tickets;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
 using RailwayAppGraphQL.GraphQL.Mutations;
 using RailwayAppGraphQL.GraphQL.Queries;
+
+Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +46,8 @@ builder.Services
 // Add MassTransit
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<TicketCreatedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -50,7 +56,8 @@ builder.Services.AddMassTransit(x =>
             h.Password("guest");
         });
 
-        cfg.ReceiveEndpoint("ticket-created-queue", e => { e.ConfigureConsumer<TicketCreatedConsumer>(context); });
+        cfg.ReceiveEndpoint("ticket-created-queue",
+            e => { e.ConfigureConsumer<TicketCreatedConsumer>(context); });
     });
 });
 

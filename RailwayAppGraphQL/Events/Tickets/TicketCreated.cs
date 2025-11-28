@@ -10,4 +10,10 @@ public sealed record TicketCreated(
     string SeatNumber,
     decimal Price,
     Currency Currency,
-    DateTime PurchasedAtUtc);
+    DateTime PurchasedAtUtc,
+    string TrainNumber,
+    string TrainName,
+    DateTime DepartureTime,
+    DateTime ArrivalTime,
+    string DepartureStation,
+    string ArrivalStation);

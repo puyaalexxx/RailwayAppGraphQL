@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using RailwayAppGraphQL.Data;
+using RailwayAppGraphQL.Events.Tickets;
 using RailwayAppGraphQL.Extensions;
 using RailwayAppGraphQL.GraphQL.Inputs.Tickets;
 using RailwayAppGraphQL.Models.Tickets;
@@ -9,13 +12,16 @@ namespace RailwayAppGraphQL.GraphQL.Mutations;
 [ExtendObjectType(typeof(Mutation))]
 public class TicketMutations
 {
+    private readonly IBus _bus;
     private readonly IValidator<CreateTicketInput> _createValidator;
     private readonly IValidator<UpdateTicketInput> _updateValidator;
 
-    public TicketMutations(IValidator<CreateTicketInput> createValidator, IValidator<UpdateTicketInput> updateValidator)
+    public TicketMutations(IValidator<CreateTicketInput> createValidator, IValidator<UpdateTicketInput> updateValidator,
+        IBus bus)
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _bus = bus;
     }
 
     public async Task<Ticket> CreateTicket(ApplicationDbContext dbContext, CreateTicketInput input)
@@ -40,13 +46,56 @@ public class TicketMutations
 
         await dbContext.SaveChangesAsync();
 
+        // Load train with stops
+        var train = await dbContext.Trains
+            .Include(t => t.Stops.OrderBy(s => s.ArrivalTimeUtc))
+            .ThenInclude(s => s.Station) // <-- include station here
+            .FirstOrDefaultAsync(t => t.Id == ticket.TrainId);
+
+        DateTime departureTime;
+        DateTime arrivalTime;
+        string departureStation;
+        string arrivalStation;
+
+        // we need to get the departure and arrival station names if train has only one stop or more than one stop
+        // train exists because we checked it in the CreateTicketInputValidator
+        if (train!.Stops.Count == 1)
+        {
+            var stop = train.Stops.First();
+            departureTime = stop.DepartureTimeUtc;
+            arrivalTime = stop.ArrivalTimeUtc;
+            departureStation = stop.Station.Name;
+            arrivalStation = stop.Station.Name;
+        }
+        else
+        {
+            var firstStop = train.Stops.First();
+            var lastStop = train.Stops.Last();
+
+            departureTime = firstStop.DepartureTimeUtc;
+            arrivalTime = lastStop.ArrivalTimeUtc;
+            departureStation = firstStop.Station.Name;
+            arrivalStation = lastStop.Station.Name;
+        }
+
         // Publish event
-        /*await _bus.Publish(new TicketCreated(
+        await _bus.Publish(new TicketCreated(
             ticket.Id,
-            ticket.TrainId,
+            ticket.Number,
             ticket.PassengerName,
-            ticket.PurchasedAtUtc.Value
-        ));*/
+            ticket.PassengerEmail ?? "",
+            ticket.SeatNumber,
+            ticket.Price,
+            ticket.Currency,
+            ticket.PurchasedAtUtc,
+            //additional info
+            train.Number,
+            train.Name,
+            departureTime,
+            arrivalTime,
+            departureStation,
+            arrivalStation
+        ));
 
         return ticket;
     }
