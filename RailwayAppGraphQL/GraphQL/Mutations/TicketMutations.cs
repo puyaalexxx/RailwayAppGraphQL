@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Events.Tickets;
 using RailwayAppGraphQL.Extensions;
 using RailwayAppGraphQL.GraphQL.Inputs.Tickets;
+using RailwayAppGraphQL.Helpers;
 using RailwayAppGraphQL.Models.Tickets;
 
 namespace RailwayAppGraphQL.GraphQL.Mutations;
@@ -46,55 +46,18 @@ public class TicketMutations
 
         await dbContext.SaveChangesAsync();
 
-        // Load train with stops
-        var train = await dbContext.Trains
-            .Include(t => t.Stops.OrderBy(s => s.ArrivalTimeUtc))
-            .ThenInclude(s => s.Station) // <-- include station here
-            .FirstOrDefaultAsync(t => t.Id == ticket.TrainId);
-
-        DateTime departureTime;
-        DateTime arrivalTime;
-        string departureStation;
-        string arrivalStation;
-
-        // we need to get the departure and arrival station names if train has only one stop or more than one stop
-        // train exists because we checked it in the CreateTicketInputValidator
-        if (train!.Stops.Count == 1)
-        {
-            var stop = train.Stops.First();
-            departureTime = stop.DepartureTimeUtc;
-            arrivalTime = stop.ArrivalTimeUtc;
-            departureStation = stop.Station.Name;
-            arrivalStation = stop.Station.Name;
-        }
-        else
-        {
-            var firstStop = train.Stops.First();
-            var lastStop = train.Stops.Last();
-
-            departureTime = firstStop.DepartureTimeUtc;
-            arrivalTime = lastStop.ArrivalTimeUtc;
-            departureStation = firstStop.Station.Name;
-            arrivalStation = lastStop.Station.Name;
-        }
+        // ticket info
+        var ticketInfo = await TicketHelpers.GetTicketTrainInfoAsync(dbContext, ticket.TrainId);
 
         // Publish event
         await _bus.Publish(new TicketCreated(
-            ticket.Id,
-            ticket.Number,
-            ticket.PassengerName,
-            ticket.PassengerEmail ?? "",
-            ticket.SeatNumber,
-            ticket.Price,
-            ticket.Currency,
-            ticket.PurchasedAtUtc,
-            //additional info
-            train.Number,
-            train.Name,
-            departureTime,
-            arrivalTime,
-            departureStation,
-            arrivalStation
+            ticket.Id, ticket.Number,
+            ticket.PassengerName, ticket.PassengerEmail ?? "",
+            ticket.SeatNumber, ticket.Price,
+            ticket.Currency, ticket.PurchasedAtUtc,
+            ticketInfo.TrainNumber, ticketInfo.TrainName,
+            ticketInfo.DepartureTime, ticketInfo.ArrivalTime,
+            ticketInfo.DepartureStation, ticketInfo.ArrivalStation
         ));
 
         return ticket;
