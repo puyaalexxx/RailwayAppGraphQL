@@ -1,8 +1,8 @@
 ﻿using RailwayAppGraphQL.Models.Tickets;
 
-namespace RailwayAppGraphQL.Events.Tickets;
+namespace RailwayAppGraphQL.DTOs;
 
-public sealed record TicketUpdated(
+public record TicketPdfModelDto(
     Guid TicketId,
     string Number,
     string PassengerName,
@@ -16,5 +16,4 @@ public sealed record TicketUpdated(
     DateTime DepartureTime,
     DateTime ArrivalTime,
     string DepartureStation,
-    string ArrivalStation
-);
+    string ArrivalStation);

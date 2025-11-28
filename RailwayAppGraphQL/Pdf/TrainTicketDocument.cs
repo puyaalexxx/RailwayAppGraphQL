@@ -1,15 +1,15 @@
 ﻿using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using RailwayAppGraphQL.Events.Tickets;
+using RailwayAppGraphQL.DTOs;
 
 namespace RailwayAppGraphQL.Pdf;
 
 public class TrainTicketDocument : IDocument
 {
-    private readonly TicketCreated _ticket;
+    private readonly TicketPdfModelDto _ticket;
 
-    public TrainTicketDocument(TicketCreated ticket)
+    public TrainTicketDocument(TicketPdfModelDto ticket)
     {
         _ticket = ticket;
     }

@@ -83,6 +83,20 @@ public class TicketMutations
 
         await dbContext.SaveChangesAsync();
 
+        // ticket info
+        var ticketInfo = await TicketHelpers.GetTicketTrainInfoAsync(dbContext, ticket.TrainId);
+
+        // publish event
+        await _bus.Publish(new TicketUpdated(
+            ticket.Id, ticket.Number,
+            ticket.PassengerName, ticket.PassengerEmail ?? "",
+            ticket.SeatNumber, ticket.Price,
+            ticket.Currency, ticket.PurchasedAtUtc,
+            ticketInfo.TrainNumber, ticketInfo.TrainName,
+            ticketInfo.DepartureTime, ticketInfo.ArrivalTime,
+            ticketInfo.DepartureStation, ticketInfo.ArrivalStation
+        ));
+
         return ticket;
     }
 
