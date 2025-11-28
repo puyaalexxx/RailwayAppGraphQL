@@ -33,10 +33,10 @@ public class TrainTicketDocument : IDocument
 
                             row.ConstantItem(80).AlignRight().Column(column =>
                             {
-                                column.Item().AlignRight().Text($"Train No: {_ticket.Number}").FontSize(8)
+                                column.Item().AlignRight().Text($"Train No: {_ticket.TrainNumber}").FontSize(8)
                                     .FontColor(Colors.Grey.Darken1);
 
-                                column.Item().AlignRight().Text($"Ticket No: {_ticket.TrainNumber}").FontSize(8)
+                                column.Item().AlignRight().Text($"Ticket No: {_ticket.Number}").FontSize(8)
                                     .FontColor(Colors.Grey.Darken1);
                             });
                         });
