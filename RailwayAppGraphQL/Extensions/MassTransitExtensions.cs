@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using RailwayAppGraphQL.Consumers.Tickets;
+using RailwayAppGraphQL.Events.Tickets;
 
 namespace RailwayAppGraphQL.Extensions;
 

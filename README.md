@@ -15,3 +15,5 @@
 - CRUD operations for stations, trains, stops and tickets
 - 
 - FluentValidation for input validation
+- MassTransit for messaging
+- QuestPDF for PDF generation
