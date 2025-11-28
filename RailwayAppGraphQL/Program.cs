@@ -1,13 +1,9 @@
 using FluentValidation;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF;
 using QuestPDF.Infrastructure;
-using RailwayAppGraphQL.Consumers.Tickets;
 using RailwayAppGraphQL.Data;
 using RailwayAppGraphQL.Extensions;
-using RailwayAppGraphQL.GraphQL.Mutations;
-using RailwayAppGraphQL.GraphQL.Queries;
 
 Settings.License = LicenseType.Community;
 
@@ -24,45 +20,9 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 //builder.Services.AddScoped<IValidator<CreateStopInput>, CreateStopInputValidator>(); // explicit implementation
 
-// Add GraphQL server
-builder.Services
-    .AddGraphQLServer()
-    .RegisterDbContextFactory<ApplicationDbContext>()
-    .AddQueryType<Query>()
-    .AddMutationType<Mutation>()
-    .AddTypes(typeof(TrainQueries), typeof(StationQueries), typeof(TicketQueries), typeof(StopQueries),
-        typeof(TrainMutations), typeof(StationMutations), typeof(TicketMutations), typeof(StopMutations))
-    .ModifyPagingOptions(pagingOptions =>
-    {
-        pagingOptions.DefaultPageSize = 5;
-        pagingOptions.MaxPageSize = 10;
-        pagingOptions.AllowBackwardPagination = false;
-        // pagingOptions.RequirePagingBoundaries = true; // clients need to specify either first, last or take.
-    })
-    .AddProjections(); // select only required fields not all of them
-//  .AddFiltering()
-//  .AddSorting();
+builder.Services.AddGraphQL();
 
-// Add MassTransit
-builder.Services.AddMassTransit(x =>
-{
-    x.AddConsumer<TicketCreatedConsumer>();
-    x.AddConsumer<TicketDeletedConsumer>();
-
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("localhost", "/", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
-
-        cfg.ReceiveEndpoint("ticket-created-queue",
-            e => { e.ConfigureConsumer<TicketCreatedConsumer>(context); });
-        cfg.ReceiveEndpoint("ticket-deleted-queue",
-            e => { e.ConfigureConsumer<TicketDeletedConsumer>(context); });
-    });
-});
+builder.Services.AddMassTransit();
 
 var app = builder.Build();
 
